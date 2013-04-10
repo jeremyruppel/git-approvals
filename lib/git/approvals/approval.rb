@@ -4,6 +4,10 @@ module Git
   module Approvals
     class Approval
 
+      FORMATTERS = {
+        :plain => lambda { |string| string.inspect }
+      }
+
       def initialize( path, options={} ) # :nodoc:
         @path, @options = path, options
       end
@@ -15,9 +19,11 @@ module Git
         # Make sure the directory of the file exists.
         FileUtils.mkdir_p File.dirname( path )
 
+        format = :plain
+
         # Write the new string to the file.
         File.open path, 'w' do |f|
-          f << string
+          f << FORMATTERS[ format ][ string ]
         end
 
         # If the file hasn't been checked in, raise an error.

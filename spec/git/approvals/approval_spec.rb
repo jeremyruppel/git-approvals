@@ -43,8 +43,9 @@ describe Git::Approvals::Approval do
 
   describe 'formats' do
     it 'verifies plain old strings' do
+      # binding.pry
       approval = Git::Approvals::Approval.new './spec/fixtures/string.txt'
-      approval.diff( 'IT WERKSSS' ){ fail }
+      approval.diff( 'IT WERKS' ){ |diff| fail diff }
     end
   end
 end
