@@ -1,7 +1,7 @@
-require "git/approvals/version"
+require 'git/approvals/version'
 
 module Git
   module Approvals
-    # Your code goes here...
+    autoload :Approval, 'git/approvals/approval'
   end
 end
