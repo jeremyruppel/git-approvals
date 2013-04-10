@@ -2,15 +2,9 @@ require 'spec_helper'
 
 describe Git::Approvals::Approval do
 
-  describe '#filename' do
+  describe '#path' do
     it 'must be defined in subclasses' do
-      expect { subject.filename }.to raise_error( NotImplementedError )
-    end
-  end
-
-  describe '#dirname' do
-    it 'must be defined in subclasses' do
-      expect { subject.dirname }.to raise_error( NotImplementedError )
+      expect { subject.path }.to raise_error( NotImplementedError )
     end
   end
 

@@ -16,6 +16,15 @@ module Git
       end
 
       ##
+      #
+      def <<( string )
+        FileUtils.mkdir_p File.dirname( path )
+        File.open path, 'w' do |f|
+          f << string
+        end
+      end
+
+      ##
       # Shells out the given command. If the command exits with success,
       # does nothing. If the command does not exit with success, yields
       # the error output to the block.
@@ -27,19 +36,7 @@ module Git
       ##
       #
       def path
-        File.join dirname, pathname
-      end
-
-      ##
-      #
-      def filename
-        raise NotImplementedError, 'Subclasses must define #filename'
-      end
-
-      ##
-      #
-      def dirname
-        raise NotImplementedError, 'Subclasses must define #dirname'
+        raise NotImplementedError, 'Subclasses must define #path'
       end
     end
   end
