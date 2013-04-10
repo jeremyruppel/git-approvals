@@ -1,6 +1,4 @@
 require 'open3'
-require 'awesome_print'
-require 'json'
 
 module Git
   module Approvals
@@ -8,7 +6,14 @@ module Git
 
       FORMATTERS = {
         :plain   => lambda { |object| object.inspect },
-        :awesome => lambda { |object| object.awesome_inspect :plain => true }
+        :awesome => lambda { |object|
+          require 'awesome_print'
+          object.awesome_inspect :plain => true
+        },
+        :json    => lambda { |string|
+          require 'json'
+          JSON.pretty_generate( JSON.parse( string ) )
+        }
       }
 
       def initialize( path, options={} ) # :nodoc:
@@ -50,7 +55,7 @@ module Git
       ##
       #
       def format
-        :awesome
+        options[ :format ] || :awesome
       end
     end
   end
