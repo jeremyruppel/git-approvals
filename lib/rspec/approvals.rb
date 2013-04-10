@@ -1,22 +1,13 @@
 require 'git-approvals'
 
 module RSpec
-
-  class Approval < Git::Approvals::Approval
-
-    def initialize( path )
-      @path = path
-    end
-    attr_reader :path
-  end
-
   module Approvals
 
     ##
     # Verifies that the result of the block is the same as the approved
     # version.
     def verify( &block )
-      approval = RSpec::Approval.new( approval_path )
+      approval = Git::Approvals::Approval.new( approval_path )
       approval << block.call
       approval.diff { |err| ::RSpec::Expectations.fail_with err }
     rescue Errno::ENOENT => e

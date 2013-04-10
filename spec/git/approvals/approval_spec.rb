@@ -3,18 +3,17 @@ require 'spec_helper'
 describe Git::Approvals::Approval do
 
   describe '#path' do
-    it 'must be defined in subclasses' do
-      expect { subject.path }.to raise_error( NotImplementedError )
-    end
+    subject { described_class.new './foo/bar.txt' }
+
+    its( :path ){ should == './foo/bar.txt' }
   end
 
   describe '#diff' do
-    before do
-      subject.stub :path => './foo/bar.txt'
-    end
+    subject { described_class.new './foo/bar.txt' }
+
     it 'raises an exception when the file is not checked in' do
       Open3.should_receive( :capture2e ).with( 'git ls-files ./foo/bar.txt --error-unmatch' ) do
-        [ 'error verbatim', double( 'status', :success? => false ) ]
+        [ '', double( 'status', :success? => false ) ]
       end
       expect { |block| subject.diff &block }.to raise_error( Errno::ENOENT, 'No such file or directory - ./foo/bar.txt' )
     end

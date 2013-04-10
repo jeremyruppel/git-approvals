@@ -4,6 +4,11 @@ module Git
   module Approvals
     class Approval
 
+      def initialize( path ) # :nodoc:
+        @path = path
+      end
+      attr_reader :path
+
       ##
       #
       def diff( &block )
@@ -31,12 +36,6 @@ module Git
       def sh( cmd )
         out, cmd = Open3.capture2e cmd
         yield out if !cmd.success?
-      end
-
-      ##
-      #
-      def path
-        raise NotImplementedError, 'Subclasses must define #path'
       end
     end
   end
