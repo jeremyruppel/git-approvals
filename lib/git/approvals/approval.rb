@@ -1,11 +1,14 @@
 require 'open3'
+require 'awesome_print'
+require 'json'
 
 module Git
   module Approvals
     class Approval
 
       FORMATTERS = {
-        :plain => lambda { |string| string.inspect }
+        :plain   => lambda { |object| object.inspect },
+        :awesome => lambda { |object| object.awesome_inspect :plain => true }
       }
 
       def initialize( path, options={} ) # :nodoc:
@@ -18,8 +21,6 @@ module Git
       def diff( string, &block )
         # Make sure the directory of the file exists.
         FileUtils.mkdir_p File.dirname( path )
-
-        format = :plain
 
         # Write the new string to the file.
         File.open path, 'w' do |f|
@@ -44,6 +45,12 @@ module Git
       def sh( cmd )
         out, cmd = Open3.capture2e cmd
         yield out if !cmd.success?
+      end
+
+      ##
+      #
+      def format
+        :awesome
       end
     end
   end

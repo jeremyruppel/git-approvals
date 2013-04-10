@@ -43,9 +43,16 @@ describe Git::Approvals::Approval do
 
   describe 'formats' do
     it 'verifies plain old strings' do
-      # binding.pry
       approval = Git::Approvals::Approval.new './spec/fixtures/string.txt'
       approval.diff( 'IT WERKS' ){ |diff| fail diff }
+    end
+    it 'formats arrays' do
+      approval = Git::Approvals::Approval.new './spec/fixtures/array.txt'
+      approval.diff( [ :foo, :bar, :baz ] ){ |diff| fail diff }
+    end
+    it 'formats hashes' do
+      approval = Git::Approvals::Approval.new './spec/fixtures/hash.txt'
+      approval.diff( { :foo => 'bar', :baz => 'quux' } ){ |diff| fail diff }
     end
   end
 end
