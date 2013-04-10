@@ -4,28 +4,30 @@ module Git
   module Approvals
     class Approval
 
-      def initialize( path ) # :nodoc:
-        @path = path
+      def initialize( path, options={} ) # :nodoc:
+        @path, @options = path, options
       end
-      attr_reader :path
+      attr_reader :path, :options
 
       ##
       #
-      def diff( &block )
+      def diff( string, &block )
+        # Make sure the directory of the file exists.
+        FileUtils.mkdir_p File.dirname( path )
+
+        # Write the new string to the file.
+        File.open path, 'w' do |f|
+          f << string
+        end
+
+        # If the file hasn't been checked in, raise an error.
         sh "git ls-files #{path} --error-unmatch" do |err|
           raise Errno::ENOENT, path
         end
+
+        # If the file has changed, call the block.
         sh "git diff --exit-code #{path}" do |err|
           block.call err
-        end
-      end
-
-      ##
-      #
-      def <<( string )
-        FileUtils.mkdir_p File.dirname( path )
-        File.open path, 'w' do |f|
-          f << string
         end
       end
 

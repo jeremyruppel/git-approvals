@@ -6,10 +6,11 @@ module RSpec
     ##
     # Verifies that the result of the block is the same as the approved
     # version.
-    def verify( &block )
-      approval = Git::Approvals::Approval.new( approval_path )
-      approval << block.call
-      approval.diff { |err| ::RSpec::Expectations.fail_with err }
+    def verify( options={}, &block )
+      approval = Git::Approvals::Approval.new( approval_path, options )
+      approval.diff( block.call ) do |err|
+        ::RSpec::Expectations.fail_with err
+      end
     rescue Errno::ENOENT => e
       ::RSpec::Expectations.fail_with e.message
       EOS
