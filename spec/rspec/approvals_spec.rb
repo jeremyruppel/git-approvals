@@ -14,19 +14,8 @@ describe 'RSpec integration' do
   end
 
   describe '#verify' do
-
-    # around do |example|
-    #   # make the approvals directory
-    #   `mkdir -p #{approval_directory}`
-    #   # add some content to the file
-    #   `echo "IT WERKS" > #{approval_path}`
-    #   # add the file to the repo
-    #   `git add #{approval_path}`
-    #   # run the example
-    #   example.run
-    #   # clean up the file
-    #   `git rm -rf #{approval_path}`
-    # end
+    # make sure to clean up any failed fixtures
+    after { `git checkout #{approval_path}` }
 
     it 'passes when unchanged' do
       verify { "IT WERKS\n" }
