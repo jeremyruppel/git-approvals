@@ -25,7 +25,10 @@ module RSpec
     ##
     # The approval filename
     def approval_filename
-      example.description.downcase.gsub /\W+/, '_'
+      parts = [ example, *example.example_group.parent_groups ].map do |ex|
+        Git::Approvals::Utils.filenamify ex.description
+      end
+      File.join parts.to_a.reverse
     end
 
     ##
