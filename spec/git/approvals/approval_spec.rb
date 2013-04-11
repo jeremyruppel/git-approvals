@@ -41,21 +41,32 @@ describe Git::Approvals::Approval do
     end
   end
 
+  describe 'extensions' do
+    it 'leaves the extension if specified' do
+      approval = described_class.new './foo/bar.txt'
+      approval.path.should == './foo/bar.txt'
+    end
+    it 'uses the format extension if provided' do
+      approval = described_class.new './foo/bar.baz', :format => :txt
+      approval.path.should == './foo/bar.txt'
+    end
+  end
+
   describe 'formats' do
     it 'formats strings' do
-      approval = Git::Approvals::Approval.new './spec/fixtures/string.txt'
+      approval = described_class.new './spec/fixtures/string.txt'
       approval.diff( 'IT WERKS' ){ |diff| fail diff }
     end
     it 'formats arrays' do
-      approval = Git::Approvals::Approval.new './spec/fixtures/array.txt'
+      approval = described_class.new './spec/fixtures/array.txt'
       approval.diff( [ :foo, :bar, :baz ] ){ |diff| fail diff }
     end
     it 'formats hashes' do
-      approval = Git::Approvals::Approval.new './spec/fixtures/hash.txt'
+      approval = described_class.new './spec/fixtures/hash.txt'
       approval.diff( { :foo => 'bar', :baz => 'quux' } ){ |diff| fail diff }
     end
     it 'formats json' do
-      approval = Git::Approvals::Approval.new './spec/fixtures/hash.json', :format => :json
+      approval = described_class.new './spec/fixtures/hash.json', :format => :json
       approval.diff( '{"foo":"bar","baz":"quux"}' ){ |diff| fail diff }
     end
   end

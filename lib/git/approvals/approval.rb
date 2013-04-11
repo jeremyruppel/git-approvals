@@ -5,19 +5,22 @@ module Git
     class Approval
 
       FORMATTERS = {
-        :plain   => lambda { |object| object.inspect },
-        :awesome => lambda { |object|
+        :txt => lambda { |object|
           require 'awesome_print'
           object.awesome_inspect :plain => true
         },
-        :json    => lambda { |string|
+        :json => lambda { |string|
           require 'json'
-          JSON.pretty_generate( JSON.parse( string ) )
+          JSON.pretty_generate JSON.parse( string )
         }
       }
 
       def initialize( path, options={} ) # :nodoc:
         @path, @options = path, options
+
+        # rewrite the extension for the file based on the format
+        @path.chomp! File.extname( @path )
+        @path << '.' << format.to_s
       end
       attr_reader :path, :options
 
@@ -53,9 +56,10 @@ module Git
       end
 
       ##
-      #
+      # The format of this approval. Determines the file extension
+      # and also the formatter to use when writing the approval file.
       def format
-        options[ :format ] || :awesome
+        options[ :format ] || :txt
       end
     end
   end

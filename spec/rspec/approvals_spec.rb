@@ -15,7 +15,7 @@ describe 'RSpec integration' do
 
   describe '#verify' do
     # make sure to clean up any failed fixtures
-    after { `git checkout #{approval_path}` }
+    after { `git checkout #{approval_directory}` }
 
     it 'passes when unchanged' do
       verify { 'IT WERKS' }
