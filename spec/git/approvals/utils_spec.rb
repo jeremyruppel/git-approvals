@@ -6,6 +6,7 @@ describe Git::Approvals::Utils do
     {
       'Foo'     => 'foo',
       'Foo Bar' => 'foo_bar',
+      'FooBar'  => 'foo_bar',
       '#foo'    => 'foo',
       'foo#'    => 'foo'
     }.each do |original, filename|
