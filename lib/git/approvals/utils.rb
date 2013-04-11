@@ -3,7 +3,7 @@ module Git
     module Utils
 
       def filenamify( string )
-        string.downcase.gsub /\W+/, '_'
+        string.downcase.gsub( /\W+/, '_' ).gsub( /^_|_$/, '' )
       end
       module_function :filenamify
     end
