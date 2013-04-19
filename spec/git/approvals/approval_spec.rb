@@ -63,7 +63,7 @@ describe Git::Approvals::Approval do
     end
     it 'formats hashes' do
       approval = described_class.new './spec/fixtures/hash.txt'
-      approval.diff( { :foo => 'bar', :baz => 'quux' } ){ |diff| fail diff }
+      approval.diff( { :foo => 'bar', :quux => 'bar' } ){ |diff| fail diff }
     end
     it 'formats json' do
       approval = described_class.new './spec/fixtures/hash.json', :format => :json

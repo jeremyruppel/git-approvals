@@ -7,7 +7,7 @@ module Git
       FORMATTERS = {
         :txt => lambda { |object|
           require 'awesome_print'
-          object.awesome_inspect :plain => true, :indent => 2
+          object.awesome_inspect :plain => true, :indent => -2
         },
         :json => lambda { |string|
           require 'json'
