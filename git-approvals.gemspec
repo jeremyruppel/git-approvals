@@ -8,10 +8,10 @@ Gem::Specification.new do |spec|
   spec.version       = Git::Approvals::VERSION
   spec.authors       = ["Jeremy Ruppel"]
   spec.email         = ["jeremy.ruppel@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
-  spec.license       = "MIT"
+  spec.description   = %q{Simple git-powered approval tests. With RSpec integration.}
+  spec.summary       = %q{Simple git-powered approval tests.}
+  spec.homepage      = 'https://github.com/jeremyruppel/git-approvals'
+  spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
