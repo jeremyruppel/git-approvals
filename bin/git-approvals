@@ -1,0 +1,3 @@
+#!/usr/bin/env ruby -wKU
+
+exec 'git add --update --patch spec/*_spec/*'
