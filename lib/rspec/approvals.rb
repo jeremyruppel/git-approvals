@@ -1,5 +1,11 @@
 require 'git-approvals'
 
+begin
+  gem 'rspec-core', '>= 2.12.0'
+rescue Gem::LoadError =>
+  raise 'rspec/approvals requires rspec-core >= 2.12.0. Please upgrade rspec.'
+end
+
 module RSpec
   module Approvals
 
