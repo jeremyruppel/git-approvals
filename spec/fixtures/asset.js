@@ -1,3 +1,6 @@
+// Comments are preserved
 (function() {
-  return "IT WERKS";
+  return {
+    status: "IT WERKS"
+  };
 })();

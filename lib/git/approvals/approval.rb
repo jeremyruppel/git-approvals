@@ -85,7 +85,12 @@ EOS
       register_formatter :js do |object|
         require 'uglifier'
         Uglifier.compile object,
-          :output => { :beautify => true, :indent_level => 2 }
+          :output => {
+            :beautify     => true,
+            :indent_level => 2,
+            :comments     => :all,
+            :space_colon  => true
+          }
       end
 
       def initialize( path, options={} ) # :nodoc:

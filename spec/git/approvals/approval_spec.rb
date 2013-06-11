@@ -71,7 +71,10 @@ describe Git::Approvals::Approval do
     end
     it 'formats javascript' do
       approval = described_class.new './spec/fixtures/asset.js', :format => :js
-      approval.diff( '(function(){return "IT WERKS";})();' ){ |diff| fail diff }
+      approval.diff( <<-EOS ){ |diff| fail diff }
+      // Comments are preserved
+      (function(){return {status:"IT WERKS"};})();
+      EOS
     end
   end
 end
