@@ -69,5 +69,9 @@ describe Git::Approvals::Approval do
       approval = described_class.new './spec/fixtures/hash.json', :format => :json
       approval.diff( '{"foo":"bar","baz":"quux"}' ){ |diff| fail diff }
     end
+    it 'formats javascript' do
+      approval = described_class.new './spec/fixtures/asset.js', :format => :js
+      approval.diff( '(function(){return "IT WERKS";})();' ){ |diff| fail diff }
+    end
   end
 end
