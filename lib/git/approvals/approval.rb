@@ -2,6 +2,33 @@ require 'open3'
 
 module Git
   module Approvals
+    ##
+    # The base class for approval errors.
+    class ApprovalError < StandardError; end
+
+    ##
+    # Raised when an unregistered formatter is requested.
+    class UnknownFormat < ApprovalError
+      def initialize( name )
+        super "There is no registered formatter named '#{name}'."
+      end
+    end
+
+    ##
+    # Raised when a formatter's soft dependencies are missing.
+    class MissingSoftDependency < ApprovalError
+      def initialize( name, dependency )
+        super <<-EOS
+The format '#{name}' requires #{dependency}.
+To use this formatter, make sure to load the dependency:
+
+  require '#{dependency}'
+EOS
+      end
+    end
+
+    ##
+    #
     class Approval
 
       class << self
@@ -20,6 +47,11 @@ module Git
         # a formatter's soft dependency cannot be loaded.
         def format( name, object )
           formatters[ name ][ object ]
+        rescue NoMethodError => e
+          raise UnknownFormat, name
+        rescue LoadError => e
+          raise MissingSoftDependency.new name,
+            e.message[ /^cannot load such file -- (.*)$/, 1 ]
         end
 
         protected
@@ -45,6 +77,15 @@ module Git
       register_formatter :json do |object|
         require 'json'
         JSON.pretty_generate JSON.parse( object )
+      end
+
+      ##
+      # The `js` format requires the `uglifier` gem.
+      # It is suitable for formatting javascript.
+      register_formatter :js do |object|
+        require 'uglifier'
+        Uglifier.compile object,
+          :output => { :beautify => true, :indent_level => 2 }
       end
 
       def initialize( path, options={} ) # :nodoc:
