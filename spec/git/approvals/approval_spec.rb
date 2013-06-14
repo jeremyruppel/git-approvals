@@ -2,11 +2,10 @@ require 'spec_helper'
 
 describe Git::Approvals::Approval do
 
-  describe 'initialize' do
+  describe '#initialize' do
     subject { described_class.new './foo/bar.txt' }
 
-    its( :path    ){ should == './foo/bar.txt' }
-    its( :options ){ should == { } }
+    its( :to_path ){ should == './foo/bar.txt' }
   end
 
   describe '#diff' do
@@ -44,11 +43,11 @@ describe Git::Approvals::Approval do
   describe 'extensions' do
     it 'leaves the extension if specified' do
       approval = described_class.new './foo/bar.txt'
-      approval.path.should == './foo/bar.txt'
+      approval.to_path.should == './foo/bar.txt'
     end
     it 'uses the format extension if provided' do
       approval = described_class.new './foo/bar.baz', :format => :txt
-      approval.path.should == './foo/bar.txt'
+      approval.to_path.should == './foo/bar.txt'
     end
   end
 

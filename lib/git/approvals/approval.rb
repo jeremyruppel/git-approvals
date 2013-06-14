@@ -4,22 +4,28 @@ require 'tilt'
 
 module Git
   module Approvals
-    Tilt.register JSONFormatter,         'json'
-    Tilt.register UglifierFormatter,     'js'
-    Tilt.register AwesomePrintFormatter, 'txt'
 
     ##
     #
     class Approval < Pathname
 
       def initialize( path, options={} ) # :nodoc:
-        @path, @options = path, options
+        path = Pathname( path )
+        # TODO refactor
+        # TODO make default format (txt) configurable?
+        path = path.sub_ext( find_extname( options[ :format ], path.extname, 'txt' ) )
 
-        # rewrite the extension for the file based on the format
-        @path.chomp! File.extname( @path )
-        @path << '.' << format.to_s
+        super path.to_path
       end
-      attr_reader :path, :options
+
+      def find_extname( *args )
+        ext = args.detect do |arg|
+          !arg.nil? && !arg.empty?
+        end
+        ext = ext.to_s
+        ext = '.' + ext unless ext.start_with?( '.' )
+        ext
+      end
 
       ##
       # Diffs the given string with this approval file. If the
@@ -28,20 +34,20 @@ module Git
       # called if the diff fails, meaning there are differences.
       def diff( string, &block )
         # Make sure the directory of the file exists.
-        FileUtils.mkdir_p File.dirname( path )
+        dirname.mkpath
 
         # Write the new string to the file.
-        File.open path, 'w' do |f|
+        open 'w' do |f|
           f << Tilt.new( to_path ).render( string )
         end
 
         # If the file hasn't been checked in, raise an error.
-        sh "git ls-files #{path} --error-unmatch" do |err|
-          raise Errno::ENOENT, path
+        sh "git ls-files #{to_path} --error-unmatch" do |err|
+          raise Errno::ENOENT, to_path
         end
 
         # If the file has changed, call the block.
-        sh "git diff --exit-code #{path}" do |err|
+        sh "git diff --exit-code #{to_path}" do |err|
           block.call err
         end
       end
@@ -54,13 +60,12 @@ module Git
         out, cmd = Open3.capture2e cmd
         yield out if !cmd.success?
       end
-
-      ##
-      # The format of this approval. Determines the file extension
-      # and also the formatter to use when writing the approval file.
-      def format
-        options[ :format ] || :txt
-      end
     end
+
+    ##
+    # Register all formatters as tilt templates.
+    Tilt.register JSONFormatter,         'json'
+    Tilt.register UglifierFormatter,     'js'
+    Tilt.register AwesomePrintFormatter, 'txt'
   end
 end
