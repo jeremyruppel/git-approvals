@@ -18,10 +18,12 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'awesome_print', '1.1.0'
+  spec.add_dependency 'tilt', '~> 1.4.1'
 
   # soft dependencies
-  spec.add_development_dependency 'uglifier',    '~> 2.1.1'
+  spec.add_development_dependency 'awesome_print', '~> 1.1.0'
+  spec.add_development_dependency 'uglifier',      '~> 2.1.1'
+  spec.add_development_dependency 'sass',          '~> 3.2.9'
 
   spec.add_development_dependency 'bundler',     '~> 1.3'
   spec.add_development_dependency 'rspec',       '~> 2.13.0'

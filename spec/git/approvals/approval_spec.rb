@@ -2,11 +2,26 @@ require 'spec_helper'
 
 describe Git::Approvals::Approval do
 
-  describe 'initialize' do
+  describe '#initialize' do
     subject { described_class.new './foo/bar.txt' }
 
-    its( :path    ){ should == './foo/bar.txt' }
+    its( :to_path ){ should == './foo/bar.txt' }
     its( :options ){ should == { } }
+  end
+
+  describe '#options' do
+    describe ':format' do
+      it 'replaces the extension' do
+        subject = described_class.new 'foo/bar.txt', :format => :json
+        subject.to_path.should == 'foo/bar.json'
+      end
+    end
+    describe ':filename' do
+      it 'replaces the filename' do
+        subject = described_class.new 'foo/bar.txt', :filename => 'baz'
+        subject.to_path.should == 'foo/baz.txt'
+      end
+    end
   end
 
   describe '#diff' do
@@ -41,17 +56,6 @@ describe Git::Approvals::Approval do
     end
   end
 
-  describe 'extensions' do
-    it 'leaves the extension if specified' do
-      approval = described_class.new './foo/bar.txt'
-      approval.path.should == './foo/bar.txt'
-    end
-    it 'uses the format extension if provided' do
-      approval = described_class.new './foo/bar.baz', :format => :txt
-      approval.path.should == './foo/bar.txt'
-    end
-  end
-
   describe 'formats' do
     it 'formats strings' do
       approval = described_class.new './spec/fixtures/string.txt'
@@ -66,14 +70,21 @@ describe Git::Approvals::Approval do
       approval.diff( { :foo => 'bar', :quux => 'bar' } ){ |diff| fail diff }
     end
     it 'formats json' do
-      approval = described_class.new './spec/fixtures/hash.json', :format => :json
+      approval = described_class.new './spec/fixtures/hash.json'
       approval.diff( '{"foo":"bar","baz":"quux"}' ){ |diff| fail diff }
     end
     it 'formats javascript' do
-      approval = described_class.new './spec/fixtures/asset.js', :format => :js
+      approval = described_class.new './spec/fixtures/asset.js'
       approval.diff( <<-EOS ){ |diff| fail diff }
       // Comments are preserved
       (function(){return {status:"IT WERKS"};})();
+      EOS
+    end
+    it 'formats css' do
+      approval = described_class.new './spec/fixtures/asset.css'
+      approval.diff( <<-EOS ){ |diff| fail diff }
+      // Comments are preserved
+      html,body{font-family:"Helvetica Neue";}
       EOS
     end
   end

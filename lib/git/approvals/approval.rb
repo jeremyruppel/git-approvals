@@ -1,106 +1,46 @@
 require 'open3'
+require 'pathname'
+require 'tilt'
 
 module Git
   module Approvals
-    ##
-    # The base class for approval errors.
-    class ApprovalError < StandardError; end
-
-    ##
-    # Raised when an unregistered formatter is requested.
-    class UnknownFormat < ApprovalError
-      def initialize( name )
-        super "There is no registered formatter named '#{name}'."
-      end
-    end
-
-    ##
-    # Raised when a formatter's soft dependencies are missing.
-    class MissingSoftDependency < ApprovalError
-      def initialize( name, dependency )
-        super <<-EOS
-The format '#{name}' requires #{dependency}.
-To use this formatter, make sure to load the dependency:
-
-  require '#{dependency}'
-EOS
-      end
-    end
 
     ##
     #
-    class Approval
-
-      class << self
-
-        ##
-        # Registers a new formatter block by name. The block
-        # is expected to return a deterministic string
-        # representation of an object.
-        def register_formatter( name, &block )
-          formatters[ name.to_sym ] = block
-        end
-
-        ##
-        # Looks up the formatter named `name` and attempts to
-        # format `object`. Raises a helpful error message if
-        # a formatter's soft dependency cannot be loaded.
-        def format( name, object )
-          formatters[ name ][ object ]
-        rescue NoMethodError => e
-          raise UnknownFormat, name
-        rescue LoadError => e
-          raise MissingSoftDependency.new name,
-            e.message[ /^cannot load such file -- (.*)$/, 1 ]
-        end
-
-        protected
-
-        ##
-        # The hash of registered formatters by name.
-        def formatters
-          @formatters ||= { }
-        end
-      end
-
-      ##
-      # The `txt` format requires the `awesome_print` gem.
-      # It is suitable for formatting most native ruby types.
-      register_formatter :txt do |object|
-        require 'awesome_print'
-        object.awesome_inspect :plain => true, :indent => -2
-      end
-
-      ##
-      # The `json` format requires the `json` library.
-      # It is suitable for formatting JSON strings.
-      register_formatter :json do |object|
-        require 'json'
-        JSON.pretty_generate JSON.parse( object )
-      end
-
-      ##
-      # The `js` format requires the `uglifier` gem.
-      # It is suitable for formatting javascript.
-      register_formatter :js do |object|
-        require 'uglifier'
-        Uglifier.compile object,
-          :output => {
-            :beautify     => true,
-            :indent_level => 2,
-            :comments     => :all,
-            :space_colon  => true
-          }
-      end
+    class Approval < Pathname
 
       def initialize( path, options={} ) # :nodoc:
-        @path, @options = path, options
+        @options = options
 
-        # rewrite the extension for the file based on the format
-        @path.chomp! File.extname( @path )
-        @path << '.' << format.to_s
+        path = Pathname( path )
+        path = munge_format( path )
+        path = munge_filename( path )
+
+        super path.to_path
       end
-      attr_reader :path, :options
+      attr_reader :options
+
+      ##
+      # Makes sure the given pathname has an extension.
+      def munge_format( path )
+        ext = [ options[ :format ], path.extname, 'txt' ].detect do |arg|
+          !arg.nil? && !arg.empty?
+        end
+        ext = ext.to_s
+        ext = '.' + ext unless ext.start_with?( '.' )
+        path.sub_ext ext
+      end
+
+      ##
+      # Makes sure the given pathname has the correct filename.
+      def munge_filename( path )
+        if filename = options[ :filename ]
+          dir, base = path.split
+          dir.join( filename + base.extname )
+        else
+          path
+        end
+      end
 
       ##
       # Diffs the given string with this approval file. If the
@@ -109,20 +49,20 @@ EOS
       # called if the diff fails, meaning there are differences.
       def diff( string, &block )
         # Make sure the directory of the file exists.
-        FileUtils.mkdir_p File.dirname( path )
+        dirname.mkpath
 
         # Write the new string to the file.
-        File.open path, 'w' do |f|
-          f << self.class.format( format, string )
+        open 'w' do |f|
+          f << Tilt.new( to_path ).render( string )
         end
 
         # If the file hasn't been checked in, raise an error.
-        sh "git ls-files #{path} --error-unmatch" do |err|
-          raise Errno::ENOENT, path
+        sh "git ls-files #{to_path} --error-unmatch" do |err|
+          raise Errno::ENOENT, to_path
         end
 
         # If the file has changed, call the block.
-        sh "git diff --exit-code #{path}" do |err|
+        sh "git diff --exit-code #{to_path}" do |err|
           block.call err
         end
       end
@@ -135,13 +75,13 @@ EOS
         out, cmd = Open3.capture2e cmd
         yield out if !cmd.success?
       end
-
-      ##
-      # The format of this approval. Determines the file extension
-      # and also the formatter to use when writing the approval file.
-      def format
-        options[ :format ] || :txt
-      end
     end
+
+    ##
+    # Register all formatters as tilt templates.
+    Tilt.register AwesomePrintFormatter, 'txt'
+    Tilt.register JSONFormatter,         'json'
+    Tilt.register UglifierFormatter,     'js'
+    Tilt.register SassFormatter,         'css'
   end
 end

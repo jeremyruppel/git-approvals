@@ -4,13 +4,13 @@ require 'rspec/approvals'
 describe 'RSpec integration' do
 
   it 'provides the correct approval directory' do
-    approval_directory.should == './spec/rspec/approvals_spec'
+    approval_directory.should == './spec/git/approvals/rspec_spec'
   end
   it 'provides the correct approval filename' do
     approval_filename.should == 'rspec_integration/provides_the_correct_approval_filename'
   end
   it 'provides the correct approval path' do
-    approval_path.should == './spec/rspec/approvals_spec/rspec_integration/provides_the_correct_approval_path'
+    approval_path.should == './spec/git/approvals/rspec_spec/rspec_integration/provides_the_correct_approval_path'
   end
 
   describe '#verify' do
