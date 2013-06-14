@@ -6,6 +6,7 @@ describe Git::Approvals::Approval do
     subject { described_class.new './foo/bar.txt' }
 
     its( :to_path ){ should == './foo/bar.txt' }
+    its( :options ){ should == { } }
   end
 
   describe '#diff' do

@@ -10,21 +10,24 @@ module Git
     class Approval < Pathname
 
       def initialize( path, options={} ) # :nodoc:
+        @options = options
+
         path = Pathname( path )
-        # TODO refactor
-        # TODO make default format (txt) configurable?
-        path = path.sub_ext( find_extname( options[ :format ], path.extname, 'txt' ) )
+        path = ensure_format( path )
 
         super path.to_path
       end
+      attr_reader :options
 
-      def find_extname( *args )
-        ext = args.detect do |arg|
+      ##
+      # Makes sure the given pathname has an extension.
+      def ensure_format( path )
+        ext = [ options[ :format ], path.extname, 'txt' ].detect do |arg|
           !arg.nil? && !arg.empty?
         end
         ext = ext.to_s
         ext = '.' + ext unless ext.start_with?( '.' )
-        ext
+        path.sub_ext ext
       end
 
       ##
