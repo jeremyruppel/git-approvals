@@ -70,14 +70,21 @@ describe Git::Approvals::Approval do
       approval.diff( { :foo => 'bar', :quux => 'bar' } ){ |diff| fail diff }
     end
     it 'formats json' do
-      approval = described_class.new './spec/fixtures/hash.json', :format => :json
+      approval = described_class.new './spec/fixtures/hash.json'
       approval.diff( '{"foo":"bar","baz":"quux"}' ){ |diff| fail diff }
     end
     it 'formats javascript' do
-      approval = described_class.new './spec/fixtures/asset.js', :format => :js
+      approval = described_class.new './spec/fixtures/asset.js'
       approval.diff( <<-EOS ){ |diff| fail diff }
       // Comments are preserved
       (function(){return {status:"IT WERKS"};})();
+      EOS
+    end
+    it 'formats css' do
+      approval = described_class.new './spec/fixtures/asset.css'
+      approval.diff( <<-EOS ){ |diff| fail diff }
+      // Comments are preserved
+      html,body{font-family:"Helvetica Neue";}
       EOS
     end
   end

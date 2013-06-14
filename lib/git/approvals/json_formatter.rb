@@ -17,7 +17,7 @@ module Git
 
       def evaluate( context, locals, &block )
         # TODO use locals as options to the formatter
-        JSON.pretty_generate( JSON.parse( context ) )
+        ::JSON.pretty_generate( ::JSON.parse( context ) )
       end
     end
   end

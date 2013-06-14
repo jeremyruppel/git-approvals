@@ -17,7 +17,7 @@ module Git
 
       def evaluate( context, locals, &block )
         # TODO use locals as options to the formatter
-        Uglifier.compile context,
+        ::Uglifier.compile context,
           :output => {
             :beautify     => true,
             :indent_level => 2,

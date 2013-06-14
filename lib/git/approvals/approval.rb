@@ -79,8 +79,9 @@ module Git
 
     ##
     # Register all formatters as tilt templates.
+    Tilt.register AwesomePrintFormatter, 'txt'
     Tilt.register JSONFormatter,         'json'
     Tilt.register UglifierFormatter,     'js'
-    Tilt.register AwesomePrintFormatter, 'txt'
+    Tilt.register SassFormatter,         'css'
   end
 end
