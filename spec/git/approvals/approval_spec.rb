@@ -9,6 +9,21 @@ describe Git::Approvals::Approval do
     its( :options ){ should == { } }
   end
 
+  describe '#options' do
+    describe ':format' do
+      it 'replaces the extension' do
+        subject = described_class.new 'foo/bar.txt', :format => :json
+        subject.to_path.should == 'foo/bar.json'
+      end
+    end
+    describe ':filename' do
+      it 'replaces the filename' do
+        subject = described_class.new 'foo/bar.txt', :filename => 'baz'
+        subject.to_path.should == 'foo/baz.txt'
+      end
+    end
+  end
+
   describe '#diff' do
     subject { described_class.new './foo/bar.txt' }
 
@@ -38,17 +53,6 @@ describe Git::Approvals::Approval do
         [ '', double( 'status', :success? => true ) ]
       end
       expect { |block| subject.diff '', &block }.not_to yield_control
-    end
-  end
-
-  describe 'extensions' do
-    it 'leaves the extension if specified' do
-      approval = described_class.new './foo/bar.txt'
-      approval.to_path.should == './foo/bar.txt'
-    end
-    it 'uses the format extension if provided' do
-      approval = described_class.new './foo/bar.baz', :format => :txt
-      approval.to_path.should == './foo/bar.txt'
     end
   end
 

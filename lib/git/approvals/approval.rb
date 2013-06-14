@@ -13,7 +13,8 @@ module Git
         @options = options
 
         path = Pathname( path )
-        path = ensure_format( path )
+        path = munge_format( path )
+        path = munge_filename( path )
 
         super path.to_path
       end
@@ -21,13 +22,24 @@ module Git
 
       ##
       # Makes sure the given pathname has an extension.
-      def ensure_format( path )
+      def munge_format( path )
         ext = [ options[ :format ], path.extname, 'txt' ].detect do |arg|
           !arg.nil? && !arg.empty?
         end
         ext = ext.to_s
         ext = '.' + ext unless ext.start_with?( '.' )
         path.sub_ext ext
+      end
+
+      ##
+      # Makes sure the given pathname has the correct filename.
+      def munge_filename( path )
+        if filename = options[ :filename ]
+          dir, base = path.split
+          dir.join( filename + base.extname )
+        else
+          path
+        end
       end
 
       ##
