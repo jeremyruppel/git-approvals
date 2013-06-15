@@ -3,6 +3,7 @@
 Simple git-powered approval tests.
 
 [![Build Status](https://travis-ci.org/jeremyruppel/git-approvals.png)](https://travis-ci.org/jeremyruppel/git-approvals)
+[![Coverage Status](https://coveralls.io/repos/jeremyruppel/git-approvals/badge.png?branch=master)](https://coveralls.io/r/jeremyruppel/git-approvals?branch=master)
 
 ## Installation
 
