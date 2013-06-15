@@ -5,6 +5,7 @@ module Git
     autoload :Approval,              'git/approvals/approval'
     autoload :AwesomePrintFormatter, 'git/approvals/awesome_print_formatter.rb'
     autoload :JSONFormatter,         'git/approvals/json_formatter.rb'
+    autoload :PlainFormatter,        'git/approvals/plain_formatter.rb'
     autoload :SassFormatter,         'git/approvals/sass_formatter.rb'
     autoload :UglifierFormatter,     'git/approvals/uglifier_formatter.rb'
     autoload :Utils,                 'git/approvals/utils'

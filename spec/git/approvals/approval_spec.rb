@@ -47,7 +47,7 @@ describe Git::Approvals::Approval do
 
   describe 'Tilt mappings' do
     subject { Tilt.mappings }
-    it { should include( ''     => [ Tilt::PlainTemplate ] ) }
+    it { should include( ''     => [ Git::Approvals::PlainFormatter ] ) }
     it { should include( 'txt'  => [ Git::Approvals::AwesomePrintFormatter ] ) }
     it { should include( 'css'  => [ Git::Approvals::SassFormatter ] ) }
     it { should include( 'json' => [ Git::Approvals::JSONFormatter ] ) }

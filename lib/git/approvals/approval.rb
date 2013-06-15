@@ -51,7 +51,7 @@ module Git
 
     ##
     # Register all formatters as tilt templates.
-    Tilt.register Tilt::PlainTemplate,   ''
+    Tilt.register PlainFormatter,        ''
     Tilt.register AwesomePrintFormatter, 'txt'
     Tilt.register JSONFormatter,         'json'
     Tilt.register UglifierFormatter,     'js'
