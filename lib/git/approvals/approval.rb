@@ -7,7 +7,7 @@ module Git
 
     ##
     #
-    class Approval < Pathname
+    class Approval
 
       def initialize( path, options={} ) # :nodoc:
         @options = options
@@ -16,9 +16,14 @@ module Git
         path = munge_format( path )
         path = munge_filename( path )
 
-        super path.to_path
+        # super path.to_path
+        @path = path.to_path
       end
       attr_reader :options
+
+      def to_path
+        @path
+      end
 
       ##
       # Makes sure the given pathname has an extension.
@@ -49,10 +54,10 @@ module Git
       # called if the diff fails, meaning there are differences.
       def diff( string, &block )
         # Make sure the directory of the file exists.
-        dirname.mkpath
+        FileUtils.mkdir_p File.dirname( to_path )
 
         # Write the new string to the file.
-        open 'w' do |f|
+        File.open to_path, 'w' do |f|
           f << Tilt.new( to_path ).render( string )
         end
 
