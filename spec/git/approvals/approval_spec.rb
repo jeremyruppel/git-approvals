@@ -5,11 +5,11 @@ describe Git::Approvals::Approval do
   describe '#initialize' do
     context 'straight up' do
       subject { described_class.new 'foo/bar.txt' }
-      its( :to_path ){ should == 'foo/bar.txt' }
+      its( :path ){ should == 'foo/bar.txt' }
     end
     context 'with options' do
       subject { described_class.new 'foo/bar.txt', :format => :json, :filename => 'baz' }
-      its( :to_path ){ should == 'foo/baz.json' }
+      its( :path ){ should == 'foo/baz.json' }
     end
   end
 
@@ -43,6 +43,15 @@ describe Git::Approvals::Approval do
       end
       expect { |block| subject.diff '', &block }.not_to yield_control
     end
+  end
+
+  describe 'Tilt mappings' do
+    subject { Tilt.mappings }
+    it { should include( ''     => [ Tilt::PlainTemplate ] ) }
+    it { should include( 'txt'  => [ Git::Approvals::AwesomePrintFormatter ] ) }
+    it { should include( 'css'  => [ Git::Approvals::SassFormatter ] ) }
+    it { should include( 'json' => [ Git::Approvals::JSONFormatter ] ) }
+    it { should include( 'js'   => [ Git::Approvals::UglifierFormatter ] ) }
   end
 
   describe 'formats' do

@@ -18,7 +18,7 @@ describe 'RSpec integration' do
     after { `git checkout #{approval_directory}` }
 
     it 'passes when unchanged' do
-      verify { 'IT WERKS' }
+      expect { verify { 'IT WERKS' } }.not_to raise_error
     end
     it 'fails when changed' do
       expect { verify { 'IT BROKE' } }.to raise_error( RSpec::Expectations::ExpectationNotMetError )

@@ -13,6 +13,8 @@ module Git
       end
       module_function :filenamify
 
+      ##
+      #
       def transform_filename( str, options={} )
 
         if opt = options.delete( :format )

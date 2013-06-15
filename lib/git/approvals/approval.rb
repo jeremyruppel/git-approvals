@@ -12,10 +12,7 @@ module Git
       def initialize( path, options={} ) # :nodoc:
         @path = transform_filename( path, options )
       end
-
-      def to_path
-        @path
-      end
+      attr_reader :path
 
       ##
       # Diffs the given string with this approval file. If the
@@ -24,20 +21,20 @@ module Git
       # called if the diff fails, meaning there are differences.
       def diff( string, &block )
         # Make sure the directory of the file exists.
-        FileUtils.mkdir_p File.dirname( to_path )
+        FileUtils.mkdir_p File.dirname( path )
 
         # Write the new string to the file.
-        File.open to_path, 'w' do |f|
-          f << Tilt.new( to_path ).render( string )
+        File.open path, 'w' do |f|
+          f << Tilt.new( path ).render( string )
         end
 
         # If the file hasn't been checked in, raise an error.
-        sh "git ls-files #{to_path} --error-unmatch" do |err|
-          raise Errno::ENOENT, to_path
+        sh "git ls-files #{path} --error-unmatch" do |err|
+          raise Errno::ENOENT, path
         end
 
         # If the file has changed, call the block.
-        sh "git diff --exit-code #{to_path}" do |err|
+        sh "git diff --exit-code #{path}" do |err|
           block.call err
         end
       end
@@ -54,6 +51,7 @@ module Git
 
     ##
     # Register all formatters as tilt templates.
+    Tilt.register Tilt::PlainTemplate,   ''
     Tilt.register AwesomePrintFormatter, 'txt'
     Tilt.register JSONFormatter,         'json'
     Tilt.register UglifierFormatter,     'js'
