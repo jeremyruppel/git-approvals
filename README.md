@@ -58,11 +58,11 @@ describe Foo do
 end
 ```
 
-The result of `Foo.bar` will be written to `spec/foo_spec/foo/bar.txt`.
+The result of `Foo.bar` will be written to `spec/foo_spec/foo_bar`.
 The test will fail because the file is not checked in to your git repo,
 meaning you haven't approved it yet, so add it to approve it:
 
-`git add spec/foo_spec/foo_bar.txt`
+`git add spec/foo_spec/foo_bar`
 
 Another test run shows that the test now passes. On the next test run, the
 same file will be written out. If git says the file has changed, the
@@ -74,8 +74,8 @@ The `verify` method accepts the same options hash as the Approval constructor.
 
 The following options are supported:
 
-- `:format`: specifies the format to use when writing out the approved file. The format is inferred from the extension of the approved file, but if you specify it here, it will change the extension to match. This option accepts any extension that is registered with [tilt][tilt].
-- `:filename`: specifies the filename of the approved file.
+- `:format`: specifies the format to use when writing out the approved file. The format can be inferred from the extension of the approved file, but if you specify it here, it will change the extension to match. This option accepts any extension that is registered with [tilt][tilt].
+- `:filename`: specifies the base filename of the approved file.
 
 ### Formatters
 
@@ -86,7 +86,7 @@ The following options are supported:
 - `js` pretty-prints JavaScript source using [uglifier][uglifier].
 - `css` pretty-prints CSS source using [SASS][sass].
 
-The format will be determined by checking the `:format` key of the options hash, then the extension of the approved filename, and finally will default to `txt`.
+The format is determined by checking the `:format` key of the options hash, then the extension of the approved filename. If neither are present, the file will be written as plain text.
 
 ## Contributing
 
