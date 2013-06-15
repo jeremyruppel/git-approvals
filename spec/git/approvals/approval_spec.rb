@@ -3,24 +3,13 @@ require 'spec_helper'
 describe Git::Approvals::Approval do
 
   describe '#initialize' do
-    subject { described_class.new './foo/bar.txt' }
-
-    its( :to_path ){ should == './foo/bar.txt' }
-    its( :options ){ should == { } }
-  end
-
-  describe '#options' do
-    describe ':format' do
-      it 'replaces the extension' do
-        subject = described_class.new 'foo/bar.txt', :format => :json
-        subject.to_path.should == 'foo/bar.json'
-      end
+    context 'straight up' do
+      subject { described_class.new 'foo/bar.txt' }
+      its( :to_path ){ should == 'foo/bar.txt' }
     end
-    describe ':filename' do
-      it 'replaces the filename' do
-        subject = described_class.new 'foo/bar.txt', :filename => 'baz'
-        subject.to_path.should == 'foo/baz.txt'
-      end
+    context 'with options' do
+      subject { described_class.new 'foo/bar.txt', :format => :json, :filename => 'baz' }
+      its( :to_path ){ should == 'foo/baz.json' }
     end
   end
 

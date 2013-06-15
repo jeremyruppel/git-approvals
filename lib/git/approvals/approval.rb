@@ -1,5 +1,4 @@
 require 'open3'
-require 'pathname'
 require 'tilt'
 
 module Git
@@ -8,43 +7,14 @@ module Git
     ##
     #
     class Approval
+      include Git::Approvals::Utils
 
       def initialize( path, options={} ) # :nodoc:
-        @options = options
-
-        path = Pathname( path )
-        path = munge_format( path )
-        path = munge_filename( path )
-
-        # super path.to_path
-        @path = path.to_path
+        @path = transform_filename( path, options )
       end
-      attr_reader :options
 
       def to_path
         @path
-      end
-
-      ##
-      # Makes sure the given pathname has an extension.
-      def munge_format( path )
-        ext = [ options[ :format ], path.extname, 'txt' ].detect do |arg|
-          !arg.nil? && !arg.empty?
-        end
-        ext = ext.to_s
-        ext = '.' + ext unless ext.start_with?( '.' )
-        path.sub_ext ext
-      end
-
-      ##
-      # Makes sure the given pathname has the correct filename.
-      def munge_filename( path )
-        if filename = options[ :filename ]
-          dir, base = path.split
-          dir.join( filename + base.extname )
-        else
-          path
-        end
       end
 
       ##
