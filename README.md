@@ -2,6 +2,8 @@
 
 Simple git-powered approval tests.
 
+[![Build Status](https://travis-ci.org/jeremyruppel/git-approvals.png)](https://travis-ci.org/jeremyruppel/git-approvals)
+
 ## Installation
 
 Add this line to your application's Gemfile:
