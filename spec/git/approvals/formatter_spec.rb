@@ -16,6 +16,9 @@ end
 describe Git::Approvals::JSONFormatter do
   include_examples 'formatter', '.json'
 end
+describe Git::Approvals::HTMLFormatter do
+  include_examples 'formatter', '.html'
+end
 describe Git::Approvals::UglifierFormatter do
   include_examples 'formatter', '.js'
 end

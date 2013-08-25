@@ -53,8 +53,14 @@ module Git
     # Register all formatters as tilt templates.
     Tilt.register PlainFormatter,        ''
     Tilt.register AwesomePrintFormatter, 'txt'
+    Tilt.register HTMLFormatter,         'html'
     Tilt.register JSONFormatter,         'json'
     Tilt.register UglifierFormatter,     'js'
     Tilt.register SassFormatter,         'css'
+
+    # FIXME there is already a template registered for 'html',
+    # so we need to prefer ours here. There has to be a better
+    # way to avoid that conflict though.
+    Tilt.prefer HTMLFormatter, 'html'
   end
 end
